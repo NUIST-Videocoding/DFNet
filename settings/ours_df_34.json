@@ -1,0 +1,10 @@
+{
+    "model_name": "x101",
+    "yaml_path": "/detectron2-main/configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml",
+    "pkl_path": " ",
+    "VTM": {
+        "QP": 34,
+        "threads": 16
+    },
+    "pixel_num": 3751665408
+}
