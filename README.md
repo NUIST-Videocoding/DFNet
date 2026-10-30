@@ -26,9 +26,9 @@ Download the pretrained model from [Baidu Netdisk](https://pan.baidu.com/s/1Nfcl
 
 ### 1. Dataset Preparation
 
-**Training set.** The training set comprises 85,900 images: 47,588 real-world BDD100K images and 38,312 PASCAL VOC images, including 9,578 clean training images and their corresponding foggy, rainy, and snowy versions.
+**(1) Training set.** The training set comprises 85,900 images: 47,588 real-world BDD100K images and 38,312 PASCAL VOC images, including 9,578 clean training images and their corresponding foggy, rainy, and snowy versions.
 
-**Test sets.** The test sets comprise three real-world DAWN subsets—DAWN-Fog (300 images), DAWN-Rain (200), and DAWN-Snow (204)—and three synthetic PASCAL VOC subsets—VOC-Fog, VOC-Rain, and VOC-Snow—with 2,129 images per subset.
+**(2) Test sets.** The test sets comprise three real-world DAWN subsets—DAWN-Fog (300 images), DAWN-Rain (200), and DAWN-Snow (204)—and three synthetic PASCAL VOC subsets—VOC-Fog, VOC-Rain, and VOC-Snow—with 2,129 images per subset.
 
 | Dataset | Purpose | Download |
 | --- | --- | --- |
@@ -37,7 +37,11 @@ Download the pretrained model from [Baidu Netdisk](https://pan.baidu.com/s/1Nfcl
 | BDD100K | Real-world images included in the training set | [Official BDD100K download documentation](https://github.com/bdd100k/bdd100k/blob/master/doc/source/download.rst) |
 | RDMNet weather data | Synthetic VOC fog, rain, and snow subsets used for training and testing | [RDMNet dataset instructions](https://github.com/xfwang23/RDMNet) · [Dataset archive](https://drive.google.com/file/d/1q07ldCxjyKXasCfKP9p7pWbyRp93KqS9/view?usp=drive_link) |
 
-### 2. Training
+### 2. Detector Checkpoint and Class Mapping
+
+We adopt Faster R-CNN with a ResNeXt-101-FPN backbone, initialized from the COCO-pretrained checkpoint model_final_68b088.pkl from the official Detectron2 Model Zoo. The detector parameters remain frozen during training and evaluation, and the same detection model is used for all compared multi-scale feature compression methods. To ensure compatibility with the COCO-pretrained detector, the annotations of the DAWN and VOC datasets are converted into COCO format. During this conversion, category labels are mapped to the corresponding COCO category IDs using explicit class-name correspondences, including cases where category names differ between the original datasets and COCO. The same category-mapping and evaluation protocol is applied to all compared methods.
+
+### 3. Training
 
 Set the training parameters in [`faster_rcnn_X_101_32x8d_FPN_3x ours.yaml`](configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x%20ours.yaml).
 
@@ -48,7 +52,28 @@ python tools/train_net.py \
   OUTPUT_DIR output/dfnet_train
 ```
 
-### 3. Testing
+### 4. Testing
+
+The testing procedure follows the coding protocol described below: 
+
+**(1) Role of the Entropy Model and VVC Coding.** During training, a differentiable entropy model is employed to estimate the bitrate of the compact feature representations, enabling WPANet and FFRNet to be jointly optimized under the task and rate losses. Since VVC is non-differentiable, it is not involved in gradient-based optimization. During inference, the entropy-based rate estimation module is replaced by VVC for actual encoding and decoding of the learned compact representations. DFNet is trained only once with a fixed rate-accuracy trade-off parameter of λ = 0.15, while four operating points are obtained by adjusting the VVC QP during inference, without retraining the network.
+
+**(2) Feature Quantization and Pseudo-Image Conversion.** During inference, WPANet generates a compact feature representation with dimensions H/64×W/64 × 192, where H and W denote the height and width of the preprocessed input image, respectively. The compact features are normalized to the range [0, 1023] using dataset-level minimum and maximum values and then quantized into 10-bit integer samples. The 192 feature channels are spatially arranged into a single-channel pseudo-image using a 12×16 grid in raster-scan order. Accordingly, the pseudo-image has a spatial resolution of 12H/64×16W/64, assuming that the feature dimensions require no additional padding. After VVC decoding, the decoded pseudo-image is rearranged into the original 192-channel layout and dequantized using the same normalization parameters. The reconstructed compact representation is subsequently fed into FFRNet for multi-scale feature reconstruction.  
+
+**(3) VVC configuration and QP Settings.** The pseudo-images are encoded using VTM-12.0 under the All-Intra configuration, with a 10-bit input depth and a monochrome (4:0:0) chroma format. Rate-accuracy operating points are obtained for each test subset by adjusting the VVC QP without retraining the network. BD-rate is calculated relative to VVC-Intra based on the rate-accuracy curves, which enables bitrate comparisons at equivalent detection accuracy through interpolation over the overlapping accuracy range. To facilitate BD-rate comparison over a sufficiently overlapping mAP range, four operating points are selected for each method to approximate the mAP values of the corresponding VVC-Intra anchor points as closely as possible. The four QPs for each test subset are:
+
+   <table border="1" style="border-collapse: collapse; width: 100%;">
+     <thead>
+       <tr><th>Test subset</th><th>QPs</th><th>Test subset</th><th>QPs</th></tr>
+     </thead>
+     <tbody>
+       <tr><td>DAWN-Fog</td><td>22, 24, 28, 30</td><td>VOC-Fog</td><td>30, 32, 34, 36</td></tr>
+       <tr><td>DAWN-Rain</td><td>22, 24, 25, 28</td><td>VOC-Rain</td><td>28, 30, 32, 34</td></tr>
+       <tr><td>DAWN-Snow</td><td>19, 22, 26, 28</td><td>VOC-Snow</td><td>28, 30, 32, 34</td></tr>
+     </tbody>
+   </table>
+
+
 
 For [`test_all_dataset_cocostyle_ours.py`](test_all_dataset_cocostyle_ours.py), set `DFNET_DATASET_ROOT` to your DAWN directory, choose the experiment IDs, datasets, and QPs in `id_dataset_qp_dict`, and provide a matching `settings/<experiment_id>_<dataset>_<qp>.json` file with the model config, checkpoint, and VTM settings. Run `uncompress` first, then run `evaluation` with the same settings.
 
