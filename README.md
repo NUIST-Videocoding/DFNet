@@ -149,7 +149,7 @@ Following the interpolation methods discussed in [2.1], we compared three approa
     <tr><td align="center">HSSC</td><td align="center">-91.45</td><td align="center">-91.11</td><td align="center">0.34</td><td align="center">-91.46</td><td align="center">-0.01</td><td align="center">-95.71</td><td align="center">-95.71</td><td align="center">0.00</td><td align="center">-95.70</td><td align="center">0.01</td></tr>
     <tr><td align="center">LMSFC</td><td align="center">-90.11</td><td align="center">-89.10</td><td align="center">1.01</td><td align="center">-90.75</td><td align="center">-0.64</td><td align="center">-92.45</td><td align="center">-88.60</td><td align="center">3.85</td><td align="center">-92.05</td><td align="center">0.40</td></tr>
     <tr><td align="center">MCNN</td><td align="center">-94.70</td><td align="center">-94.77</td><td align="center">-0.07</td><td align="center">-94.62</td><td align="center">0.08</td><td align="center">-97.75</td><td align="center">-97.80</td><td align="center">-0.05</td><td align="center">-96.85</td><td align="center">0.90</td></tr>
-    <tr><td align="center">Proposed</td><td align="center">-94.74</td><td align="center">-94.83</td><td align="center">-0.09</td><td align="center">-94.75</td><td align="center">-0.01</td><td align="center">-98.46</td><td align="center">-98.11</td><td align="center">0.35</td><td align="center">-98.46</td><td align="center">0.00</td></tr>
+    <tr><td align="center">Proposed</td><td align="center"><strong>-94.74</strong></td><td align="center"><strong>-94.83</strong></td><td align="center">-0.09</td><td align="center"><strong>-94.75</strong></td><td align="center">-0.01</td><td align="center"><strong>-98.46</strong></td><td align="center"><strong>-98.11</strong></td><td align="center">0.35</td><td align="center"><strong>-98.46</strong></td><td align="center">0.00</td></tr>
   </tbody>
 </table>
 
@@ -174,7 +174,7 @@ To investigate the influence of numerical precision, we compared the original ra
     <tr><td align="center">HSSC</td><td align="center">-91.45</td><td align="center">-91.44</td><td align="center">0.01</td><td align="center">-91.45</td><td align="center">0.00</td><td align="center">-95.71</td><td align="center">-95.71</td><td align="center">0.00</td><td align="center">-95.71</td><td align="center">0.00</td></tr>
     <tr><td align="center">LMSFC</td><td align="center">-90.11</td><td align="center">-90.11</td><td align="center">0.00</td><td align="center">-90.11</td><td align="center">0.00</td><td align="center">-92.45</td><td align="center">-92.45</td><td align="center">0.00</td><td align="center">-92.45</td><td align="center">0.00</td></tr>
     <tr><td align="center">MCNN</td><td align="center">-94.70</td><td align="center">-94.70</td><td align="center">0.00</td><td align="center">-94.70</td><td align="center">0.00</td><td align="center">-97.75</td><td align="center">-97.75</td><td align="center">0.00</td><td align="center">-97.75</td><td align="center">0.00</td></tr>
-    <tr><td align="center">Proposed</td><td align="center">-94.74</td><td align="center">-94.75</td><td align="center">-0.01</td><td align="center">-94.74</td><td align="center">0.00</td><td align="center">-98.46</td><td align="center">-98.47</td><td align="center">-0.01</td><td align="center">-98.46</td><td align="center">0.00</td></tr>
+    <tr><td align="center">Proposed</td><td align="center"><strong>-94.74</strong></td><td align="center"><strong>-94.75</strong></td><td align="center">-0.01</td><td align="center"><strong>-94.74</strong></td><td align="center">0.00</td><td align="center"><strong>-98.46</strong></td><td align="center"><strong>-98.47</strong></td><td align="center">-0.01</td><td align="center"><strong>-98.46</strong></td><td align="center">0.00</td></tr>
   </tbody>
 </table>
 
@@ -200,8 +200,8 @@ To further evaluate the proposed frequency-domain components, we conduct additio
     <tr><th align="center">Method</th><th align="center">DAWN-Fog</th><th align="center">DAWN-Rain</th><th align="center">DAWN-Snow</th><th align="center">Average</th></tr>
   </thead>
   <tbody>
-    <tr><td align="center">w/ WGFM [3.7]</td><td align="center">-85.66</td><td align="center">-96.13</td><td align="center">-92.04</td><td align="center">-91.28</td></tr>
-    <tr><td align="center">w/ Fourier Branch [3.8]</td><td align="center">-89.47</td><td align="center">-95.67</td><td align="center">-90.64</td><td align="center">-91.93</td></tr>
+    <tr><td align="center">w/ WGFM</td><td align="center">-85.66</td><td align="center">-96.13</td><td align="center">-92.04</td><td align="center">-91.28</td></tr>
+    <tr><td align="center">w/ Fourier Branch</td><td align="center">-89.47</td><td align="center">-95.67</td><td align="center">-90.64</td><td align="center">-91.93</td></tr>
     <tr><td align="center">Proposed</td><td align="center"><strong>-92.12</strong></td><td align="center"><strong>-97.83</strong></td><td align="center"><strong>-94.27</strong></td><td align="center"><strong>-94.74</strong></td></tr>
   </tbody>
 </table>
